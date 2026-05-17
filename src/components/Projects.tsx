@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { GitFork, ExternalLink, Star } from 'lucide-react'
 import type { Lang } from '../i18n/translations'
 import { t, tr } from '../i18n/translations'
-import { projects } from '../data/content'
+import { projects, enterpriseProjects } from '../data/content'
 
 export default function Projects({ lang }: { lang: Lang }) {
   return (
@@ -10,11 +10,41 @@ export default function Projects({ lang }: { lang: Lang }) {
       <div className="container">
         <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}>
           <p className="section-tag">{tr(t.projects.tag, lang)}</p>
-          <h2 style={{ marginBottom: 14 }}>{tr(t.projects.title, lang)}</h2>
-          <p style={{ color:'var(--muted)', fontSize:14, marginBottom:60, maxWidth:480 }}>{tr(t.projects.desc, lang)}</p>
+          <h2 style={{ marginBottom:14 }}>{tr(t.projects.title, lang)}</h2>
+          <p style={{ color:'var(--muted)', fontSize:14, marginBottom:48, maxWidth:480 }}>{tr(t.projects.desc, lang)}</p>
         </motion.div>
 
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(320px, 1fr))', gap:20 }}>
+        {/* Enterprise projects grid */}
+        <motion.div initial={{ opacity:0, y:20 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} style={{ marginBottom:56 }}>
+          <div style={{ fontSize:9, letterSpacing:4, color:'var(--muted)', textTransform:'uppercase', marginBottom:20, display:'flex', alignItems:'center', gap:12 }}>
+            <span style={{ width:20, height:1, background:'var(--muted)', display:'inline-block' }} />
+            {lang === 'en' ? 'Enterprise systems delivered' : 'Hệ thống doanh nghiệp đã triển khai'}
+          </div>
+          <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(200px, 1fr))', gap:12 }}>
+            {enterpriseProjects.map((ep, i) => (
+              <motion.div key={i}
+                initial={{ opacity:0, scale:.95 }} whileInView={{ opacity:1, scale:1 }} viewport={{ once:true }}
+                transition={{ delay: i * .05 }}
+                whileHover={{ y:-3, scale:1.02 }}
+                className="glow-card"
+                style={{ padding:'18px 20px', borderLeft:`2px solid ${ep.color}` }}
+              >
+                <div style={{ fontSize:22, marginBottom:8 }}>{ep.icon}</div>
+                <div style={{ fontSize:12, fontFamily:'Outfit,sans-serif', fontWeight:700, color:'var(--text)', marginBottom:4, lineHeight:1.3 }}>
+                  {lang === 'en' ? ep.name.en : ep.name.vi}
+                </div>
+                <div style={{ fontSize:10, color: ep.color, letterSpacing:.5 }}>{ep.tech}</div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* OSS projects */}
+        <div style={{ fontSize:9, letterSpacing:4, color:'var(--muted)', textTransform:'uppercase', marginBottom:20, display:'flex', alignItems:'center', gap:12 }}>
+          <span style={{ width:20, height:1, background:'var(--muted)', display:'inline-block' }} />
+          {lang === 'en' ? 'Open source repos' : 'Dự án mã nguồn mở'}
+        </div>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fit, minmax(300px, 1fr))', gap:20 }}>
           {projects.map((p, i) => (
             <motion.div key={p.num}
               initial={{ opacity:0, y:28 }}
@@ -22,19 +52,19 @@ export default function Projects({ lang }: { lang: Lang }) {
               viewport={{ once:true }}
               transition={{ delay: i * .09 }}
               whileHover={{ y:-4 }}
-              className="card"
+              className="glow-card"
               style={{
-                padding: 28,
+                padding:28,
                 gridColumn: p.featured ? 'span 2' : 'span 1',
-                position:'relative', overflow:'hidden',
+                borderTop: p.featured ? '2px solid var(--neon)' : '1px solid var(--border)',
               }}
             >
-              {/* watermark num */}
-              <span style={{ position:'absolute', top:12, right:20, fontFamily:'Outfit,sans-serif', fontSize:72, fontWeight:800, color:'rgba(0,255,163,.03)', lineHeight:1, userSelect:'none', pointerEvents:'none' }}>{p.num}</span>
-
               {p.featured && (
                 <div style={{ position:'absolute', top:0, left:0, right:0, height:2, background:'var(--neon)', boxShadow:'0 0 16px var(--neon)' }} />
               )}
+
+              {/* watermark */}
+              <span style={{ position:'absolute', top:12, right:20, fontFamily:'Outfit,sans-serif', fontSize:72, fontWeight:900, color:'rgba(0,255,163,.025)', lineHeight:1, userSelect:'none', pointerEvents:'none' }}>{p.num}</span>
 
               <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', marginBottom:16 }}>
                 <div style={{ display:'flex', gap:8, alignItems:'center', flexWrap:'wrap' }}>
@@ -56,15 +86,15 @@ export default function Projects({ lang }: { lang: Lang }) {
                 </div>
                 <a href={p.url} target="_blank" rel="noopener noreferrer"
                   style={{ color:'var(--muted)', transition:'color .2s' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--neon)')}
-                  onMouseLeave={e => (e.currentTarget.style.color = 'var(--muted)')}
+                  onMouseEnter={e => (e.currentTarget.style.color='var(--neon)')}
+                  onMouseLeave={e => (e.currentTarget.style.color='var(--muted)')}
                 ><ExternalLink size={15} /></a>
               </div>
 
-              <h3 style={{ fontFamily:'Outfit,sans-serif', fontWeight:700, fontSize: p.featured ? 24 : 18, marginBottom:10, lineHeight:1.2 }}>
+              <h3 style={{ fontFamily:'Outfit,sans-serif', fontWeight:800, fontSize: p.featured ? 22 : 17, marginBottom:10, lineHeight:1.2 }}>
                 {lang === 'en' ? p.name : p.nameVi}
               </h3>
-              <p style={{ color:'var(--muted)', fontSize:13, lineHeight:1.75, marginBottom:22 }}>
+              <p style={{ color:'var(--muted)', fontSize:13, lineHeight:1.8, marginBottom:22 }}>
                 {lang === 'en' ? p.desc.en : p.desc.vi}
               </p>
 
@@ -75,8 +105,8 @@ export default function Projects({ lang }: { lang: Lang }) {
                 </span>
                 <a href={p.url} target="_blank" rel="noopener noreferrer"
                   style={{ fontSize:11, letterSpacing:2, color:'var(--neon)', textTransform:'uppercase', display:'flex', alignItems:'center', gap:6, transition:'gap .2s' }}
-                  onMouseEnter={e => (e.currentTarget.style.gap = '10px')}
-                  onMouseLeave={e => (e.currentTarget.style.gap = '6px')}
+                  onMouseEnter={e => (e.currentTarget.style.gap='10px')}
+                  onMouseLeave={e => (e.currentTarget.style.gap='6px')}
                 >
                   {tr(t.projects.viewCode, lang)} <ExternalLink size={11} />
                 </a>

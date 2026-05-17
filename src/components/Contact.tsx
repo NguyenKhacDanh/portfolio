@@ -27,10 +27,11 @@ export default function Contact({ lang }: { lang: Lang }) {
   }
 
   const infoRows = [
-    { icon: Mail,     label: 'Email',    val: profile.email,    href: `mailto:${profile.email}` },
-    { icon: Link2, label: 'Facebook', val: 'nguyenkhacdanh.1010', href: profile.facebook },
-    { icon: MapPin,   label: lang==='en' ? 'Location' : 'Địa chỉ', val: tr(t.contact.location, lang), href: null },
-    { icon: Clock,    label: lang==='en' ? 'Timezone' : 'Múi giờ',  val: tr(t.contact.timezone, lang), href: null },
+    { icon: Mail,  label: 'Email',    val: profile.email,           href: `mailto:${profile.email}` },
+    { icon: Link2, label: 'Facebook', val: 'nguyenkhacdanh.1010',   href: profile.facebook },
+    { icon: Link2, label: 'Zalo',     val: profile.zalo,            href: `https://zalo.me/${profile.zalo}` },
+    { icon: MapPin,label: lang==='en' ? 'Location' : 'Địa chỉ', val: tr(t.contact.location, lang), href: null },
+    { icon: Clock, label: lang==='en' ? 'Timezone' : 'Múi giờ',    val: tr(t.contact.timezone, lang), href: null },
   ]
 
   return (

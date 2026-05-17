@@ -15,10 +15,11 @@ export default function Navbar({ lang, setLang }: Props) {
   }, [])
 
   const links = [
-    { label: tr(t.nav.about,    lang), href: '#about'    },
-    { label: tr(t.nav.skills,   lang), href: '#skills'   },
-    { label: tr(t.nav.projects, lang), href: '#projects'  },
-    { label: tr(t.nav.contact,  lang), href: '#contact'  },
+    { label: tr(t.nav.about,      lang), href: '#about'      },
+    { label: tr(t.nav.experience, lang), href: '#experience' },
+    { label: tr(t.nav.skills,     lang), href: '#skills'     },
+    { label: tr(t.nav.projects,   lang), href: '#projects'   },
+    { label: tr(t.nav.contact,    lang), href: '#contact'    },
   ]
 
   return (
