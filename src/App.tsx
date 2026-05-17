@@ -10,7 +10,6 @@ import Projects    from './components/Projects'
 import Contact     from './components/Contact'
 import Footer      from './components/Footer'
 import MusicPlayer  from './components/MusicPlayer'
-import Butterflies  from './components/Butterflies'
 
 export default function App() {
   const [lang, setLang] = useState<Lang>('vi')
@@ -41,7 +40,6 @@ export default function App() {
       </main>
       <Footer     lang={lang} />
       <MusicPlayer />
-      <Butterflies />
     </>
   )
 }
