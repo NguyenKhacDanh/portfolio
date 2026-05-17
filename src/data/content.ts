@@ -108,41 +108,21 @@ export const skillGroups = [
   {
     title: { en: 'ERP & Automation', vi: 'ERP & Tự động hóa' },
     color: '#00ffa3',
-    items: [
-      { name: 'Microsoft Dynamics AX / D365', level: 90 },
-      { name: 'X++ / AX Development', level: 85 },
-      { name: 'Power Automate / Power BI', level: 80 },
-      { name: 'Business Process Automation', level: 88 },
-    ],
+    tags: ['Microsoft Dynamics AX', 'D365 F&O', 'Add Service / Call Service', 'Windows Service', 'Hangfire', 'Chatwoot API', 'Power BI (basic)', 'Scheduled Tasks'],
   },
   {
     title: { en: 'Languages & .NET', vi: 'Ngôn ngữ & .NET' },
     color: '#38bdf8',
-    items: [
-      { name: 'C# / .NET 8', level: 95 },
-      { name: 'ASP.NET MVC / Web API', level: 92 },
-      { name: 'WPF / WinForms / MVVM', level: 88 },
-      { name: 'PHP / Laravel', level: 78 },
-    ],
+    tags: ['C# / .NET 8', 'ASP.NET MVC', 'Web API', 'WPF / WinForms / MVVM', 'Entity Framework', 'Dapper', 'SignalR', 'PHP / Laravel'],
   },
   {
     title: { en: 'Frontend & Mobile', vi: 'Frontend & Mobile' },
     color: '#fb923c',
-    items: [
-      { name: 'ReactJS / TypeScript', level: 82 },
-      { name: 'Blazor / Angular', level: 75 },
-      { name: 'Unity 3D / C#', level: 72 },
-      { name: 'Zalo Mini App', level: 70 },
-    ],
+    tags: ['ReactJS', 'TypeScript', 'Blazor', 'Angular', 'Tailwind CSS', 'Bootstrap', 'Unity 3D', 'Zalo Mini App'],
   },
   {
     title: { en: 'Databases & Infra', vi: 'Cơ sở dữ liệu & Hạ tầng' },
     color: '#c084fc',
-    items: [
-      { name: 'SQL Server (SP, triggers)', level: 93 },
-      { name: 'PostgreSQL / MySQL', level: 80 },
-      { name: 'Docker / Azure DevOps', level: 75 },
-      { name: 'Clean Architecture / CQRS', level: 85 },
-    ],
+    tags: ['SQL Server', 'Stored Procedures', 'PostgreSQL', 'MySQL', 'MongoDB', 'Redis', 'Docker', 'Azure DevOps'],
   },
 ]

@@ -6,8 +6,8 @@ export default function Footer({ lang }: { lang: Lang }) {
   return (
     <footer style={{ borderTop:'1px solid var(--border)', padding:'36px 0', background:'var(--bg)' }}>
       <div className="container" style={{ display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:16 }}>
-        <a href="#" style={{ fontFamily:'Outfit, sans-serif', fontWeight:800, fontSize:20, color:'var(--neon)' }}>
-          NKD<span style={{ color:'var(--neon2)' }}>.dev</span>
+        <a href="#" style={{ fontFamily:'Outfit, sans-serif', fontWeight:900, fontSize:22, color:'var(--neon)', letterSpacing:'-1px' }}>
+          NKD
         </a>
         <div style={{ textAlign:'center' }}>
           <p style={{ fontSize:11, color:'var(--muted)' }}>{tr(t.footer.built, lang)}</p>

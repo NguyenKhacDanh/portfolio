@@ -7,12 +7,14 @@ import About       from './components/About'
 import Experience  from './components/Experience'
 import Skills      from './components/Skills'
 import Projects    from './components/Projects'
+import LiveFeed    from './components/LiveFeed'
 import Contact     from './components/Contact'
 import Footer      from './components/Footer'
-import MusicPlayer from './components/MusicPlayer'
+import MusicPlayer  from './components/MusicPlayer'
+import Butterflies  from './components/Butterflies'
 
 export default function App() {
-  const [lang, setLang] = useState<Lang>('en')
+  const [lang, setLang] = useState<Lang>('vi')
   const cursorRef = useRef<HTMLDivElement>(null)
   const ringRef   = useRef<HTMLDivElement>(null)
 
@@ -36,10 +38,12 @@ export default function App() {
         <Experience lang={lang} />
         <Skills     lang={lang} />
         <Projects   lang={lang} />
+        <LiveFeed   lang={lang} />
         <Contact    lang={lang} />
       </main>
       <Footer     lang={lang} />
       <MusicPlayer />
+      <Butterflies />
     </>
   )
 }
