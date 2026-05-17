@@ -1,6 +1,5 @@
 import { useEffect, useRef } from 'react'
 
-/* ─── Color themes ─── */
 interface Theme {
   inner: string; mid: string; outer: string; border: string
   lInner: string; lMid: string; lOuter: string
@@ -8,34 +7,34 @@ interface Theme {
 }
 
 const BLUE: Theme = {
-  inner: '#e0f7fa', mid: '#29b6f6', outer: '#1565c0', border: '#0a1f5c',
-  lInner: '#e1f5fe', lMid: '#0288d1', lOuter: '#1a237e',
-  vein: 'rgba(10,31,92,0.22)', spot: 'rgba(255,255,255,0.88)',
-  body: '#1a1a2e', glow: '#29b6f6',
+  inner: '#e8f4ff', mid: '#38bdf8', outer: '#1565c0', border: '#0a1a4a',
+  lInner: '#dbeafe', lMid: '#2563eb', lOuter: '#1e3a8a',
+  vein: 'rgba(147,197,253,0.38)', spot: 'rgba(255,255,255,0.92)',
+  body: '#1a1a2e', glow: '#38bdf8',
 }
 const PINK: Theme = {
-  inner: '#fce4ec', mid: '#f48fb1', outer: '#c2185b', border: '#880e4f',
-  lInner: '#fce4ec', lMid: '#e91e8c', lOuter: '#880e4f',
-  vein: 'rgba(136,14,79,0.22)', spot: 'rgba(255,255,255,0.82)',
-  body: '#2d1020', glow: '#f06292',
+  inner: '#fff0f6', mid: '#f472b6', outer: '#be185d', border: '#831843',
+  lInner: '#fce7f3', lMid: '#ec4899', lOuter: '#9d174d',
+  vein: 'rgba(249,168,212,0.38)', spot: 'rgba(255,255,255,0.88)',
+  body: '#2d1020', glow: '#f472b6',
 }
 
-/* ─── Petal pool ─── */
 interface Petal {
   x: number; y: number; vx: number; vy: number
-  rot: number; vrot: number; sz: number; alpha: number
+  rot: number; vrot: number; sz: number; alpha: number; wobble: number
 }
 
 function makePetal(cw: number): Petal {
   return {
-    x:    Math.random() * cw,
-    y:   -20 - Math.random() * 200,
-    vx:   (Math.random() - 0.5) * 0.8,
-    vy:   0.5 + Math.random() * 1.1,
-    rot:  Math.random() * Math.PI * 2,
-    vrot: (Math.random() - 0.5) * 0.04,
-    sz:   6 + Math.random() * 8,
-    alpha:0.55 + Math.random() * 0.4,
+    x:      Math.random() * cw,
+    y:     -30 - Math.random() * 200,
+    vx:     (Math.random() - 0.5) * 0.7,
+    vy:     0.55 + Math.random() * 1.1,
+    rot:    Math.random() * Math.PI * 2,
+    vrot:   (Math.random() - 0.5) * 0.04,
+    sz:     11 + Math.random() * 13,
+    alpha:  0.55 + Math.random() * 0.40,
+    wobble: Math.random() * Math.PI * 2,
   }
 }
 
@@ -44,99 +43,116 @@ function drawPetal(ctx: CanvasRenderingContext2D, p: Petal) {
   ctx.translate(p.x, p.y)
   ctx.rotate(p.rot)
   ctx.globalAlpha = p.alpha
-  // Petal shape: oval with slight notch at top
   const s = p.sz
+
+  // Cherry blossom petal: rounded oval with notch at tip
   ctx.beginPath()
-  ctx.moveTo(0, -s)
-  ctx.bezierCurveTo(-s * 0.6, -s * 1.2, -s * 1.4, -s * 0.3, -s * 1.3, s * 0.5)
-  ctx.bezierCurveTo(-s * 1.1, s * 1.3, -s * 0.5, s * 1.6, 0, s * 1.6)
-  ctx.bezierCurveTo(s * 0.5, s * 1.6, s * 1.1, s * 1.3, s * 1.3, s * 0.5)
-  ctx.bezierCurveTo(s * 1.4, -s * 0.3, s * 0.6, -s * 1.2, 0, -s)
+  ctx.moveTo(-s * 0.18, -s * 0.12)           // top notch left
+  ctx.bezierCurveTo(-s * 0.55, -s * 0.95, -s * 1.15, -s * 0.55, -s, s * 0.10)
+  ctx.bezierCurveTo(-s * 0.82, s * 0.72, -s * 0.38, s * 1.15, 0, s * 1.15)
+  ctx.bezierCurveTo(s * 0.38, s * 1.15, s * 0.82, s * 0.72, s, s * 0.10)
+  ctx.bezierCurveTo(s * 1.15, -s * 0.55, s * 0.55, -s * 0.95, s * 0.18, -s * 0.12)
   ctx.closePath()
-  const g = ctx.createRadialGradient(0, 0, s * 0.2, 0, s * 0.4, s * 1.4)
-  g.addColorStop(0, '#fce4ec')
-  g.addColorStop(0.5, '#f8bbd9')
-  g.addColorStop(1, '#f48fb1')
+
+  const g = ctx.createRadialGradient(0, s * 0.35, 0, 0, s * 0.35, s * 1.3)
+  g.addColorStop(0,    'rgba(255,232,242,1)')
+  g.addColorStop(0.42, 'rgba(255,185,215,0.95)')
+  g.addColorStop(1,    'rgba(225, 90,140,0.55)')
   ctx.fillStyle = g
   ctx.fill()
+
+  // Center vein
+  ctx.strokeStyle = 'rgba(200,90,135,0.22)'
+  ctx.lineWidth = 0.7
+  ctx.beginPath(); ctx.moveTo(0, -s * 0.05); ctx.lineTo(0, s * 1.0); ctx.stroke()
+
   ctx.restore()
   ctx.globalAlpha = 1
 }
 
 /* ─── Wing drawing ─── */
 function drawOneSide(ctx: CanvasRenderingContext2D, theme: Theme) {
-  /* Upper wing ─ bezier path going to negative-x */
+  // Upper forewing — large, sweeping to negative-x
   const uw = new Path2D()
   uw.moveTo(0, 0)
-  uw.bezierCurveTo(-2, -12, -10, -30, -20, -40)
-  uw.bezierCurveTo(-26, -46, -38, -44, -46, -34)
-  uw.bezierCurveTo(-54, -22, -52, -10, -44,  -3)
-  uw.bezierCurveTo(-34,  6,  -16,  7,   0,   0)
+  uw.bezierCurveTo(-18, -42, -65, -115, -138, -148)
+  uw.bezierCurveTo(-182, -168, -242, -156, -258, -100)
+  uw.bezierCurveTo(-270, -52, -248, 2, -196, 26)
+  uw.bezierCurveTo(-150, 48, -82, 48, -38, 27)
+  uw.bezierCurveTo(-16, 17, -4, 7, 0, 0)
   uw.closePath()
 
-  /* dark border: draw slightly scaled-up version first */
-  ctx.save(); ctx.scale(1.04, 1.04)
+  // Dark border (slightly scaled up)
+  ctx.save(); ctx.scale(1.035, 1.035)
   ctx.fillStyle = theme.border; ctx.fill(uw)
   ctx.restore()
 
-  /* main gradient */
-  const g1 = ctx.createLinearGradient(-44, -36, 0, 0)
-  g1.addColorStop(0, theme.border); g1.addColorStop(0.28, theme.outer)
-  g1.addColorStop(0.60, theme.mid); g1.addColorStop(1,    theme.inner)
+  // Main wing gradient
+  const g1 = ctx.createLinearGradient(-248, -115, 0, 0)
+  g1.addColorStop(0,    theme.border)
+  g1.addColorStop(0.18, theme.outer)
+  g1.addColorStop(0.54, theme.mid)
+  g1.addColorStop(1,    theme.inner)
   ctx.fillStyle = g1; ctx.fill(uw)
 
-  /* iridescent sheen */
-  const g1s = ctx.createLinearGradient(-22, -42, -4, -4)
-  g1s.addColorStop(0, 'rgba(255,255,255,0.30)'); g1s.addColorStop(1, 'rgba(255,255,255,0)')
+  // Iridescent sheen
+  const g1s = ctx.createLinearGradient(-110, -150, -18, -8)
+  g1s.addColorStop(0, 'rgba(255,255,255,0.38)')
+  g1s.addColorStop(0.5,'rgba(255,255,255,0.10)')
+  g1s.addColorStop(1,  'rgba(255,255,255,0)')
   ctx.fillStyle = g1s; ctx.fill(uw)
 
-  /* vein lines */
-  ctx.strokeStyle = theme.vein; ctx.lineWidth = 0.9
+  // Vein lines
+  ctx.strokeStyle = theme.vein; ctx.lineWidth = 1.1
   const veins: [number,number,number,number][] = [
-    [-2,-6, -38,-24], [-3,-3, -46,-12], [-2, 2, -40,  4],
-    [-2,-8, -20,-36], [-8,-4, -36,-30],
+    [-4,-7, -196,-72], [-4,-3, -238,-26], [-3, 5, -206, 22],
+    [-7,-12,-96,-142],  [-11,-5,-175,-128], [-5,-1,-254,-52],
   ]
   for (const [x1,y1,x2,y2] of veins) {
     ctx.beginPath(); ctx.moveTo(x1,y1); ctx.lineTo(x2,y2); ctx.stroke()
   }
 
-  /* margin spots */
+  // Margin spots
   ctx.fillStyle = theme.spot
-  const uspots = [[-44,-26],[-50,-14],[-52,-2],[-46, 6],[-38,10]]
-  for (const [sx,sy] of uspots) {
-    ctx.beginPath(); ctx.ellipse(sx*0.84,sy*0.84, 2.4,1.7, Math.atan2(sy+20,sx), 0, Math.PI*2)
-    ctx.fill()
+  for (const [sx,sy,sr] of [
+    [-212,-88,4], [-238,-44,3.5], [-252,-4,3.2], [-238,18,3],
+    [-205,28,2.8],[-165,36,2.5], [-126,43,2.5],[-88,45,2],
+  ] as [number,number,number][]) {
+    ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI*2); ctx.fill()
   }
 
-  /* Lower wing */
+  // Lower hindwing
   const lw = new Path2D()
-  lw.moveTo(0, 4)
-  lw.bezierCurveTo(-6, 12, -22, 18, -30, 26)
-  lw.bezierCurveTo(-40, 36, -44, 52, -30, 58)
-  lw.bezierCurveTo(-18, 64, -6, 56,  -2, 46)
-  lw.bezierCurveTo( 0, 36,   0, 20,   0,  4)
+  lw.moveTo(0, 12)
+  lw.bezierCurveTo(-28, 54, -82, 88, -128, 118)
+  lw.bezierCurveTo(-168, 146, -192, 188, -162, 224)
+  lw.bezierCurveTo(-135, 254, -86, 252, -46, 224)
+  lw.bezierCurveTo(-12, 200, 6, 156, 8, 98)
+  lw.bezierCurveTo(10, 52, 5, 24, 0, 12)
   lw.closePath()
 
-  ctx.save(); ctx.scale(1.04, 1.04)
+  ctx.save(); ctx.scale(1.035, 1.035)
   ctx.fillStyle = theme.border; ctx.fill(lw)
   ctx.restore()
 
-  const g2 = ctx.createLinearGradient(-38, 52, 0, 4)
-  g2.addColorStop(0, theme.lOuter); g2.addColorStop(0.4, theme.lMid); g2.addColorStop(1, theme.lInner)
+  const g2 = ctx.createLinearGradient(-168, 218, 0, 12)
+  g2.addColorStop(0, theme.lOuter); g2.addColorStop(0.35, theme.lMid); g2.addColorStop(1, theme.lInner)
   ctx.fillStyle = g2; ctx.fill(lw)
 
-  const g2s = ctx.createLinearGradient(-16, 14, -4, 44)
-  g2s.addColorStop(0, 'rgba(255,255,255,0.22)'); g2s.addColorStop(1, 'rgba(255,255,255,0)')
+  const g2s = ctx.createLinearGradient(-58, 18, -10, 160)
+  g2s.addColorStop(0, 'rgba(255,255,255,0.28)'); g2s.addColorStop(1, 'rgba(255,255,255,0)')
   ctx.fillStyle = g2s; ctx.fill(lw)
 
-  ctx.strokeStyle = theme.vein; ctx.lineWidth = 0.9
-  ctx.beginPath(); ctx.moveTo(-2,6); ctx.lineTo(-26,32); ctx.stroke()
-  ctx.beginPath(); ctx.moveTo(-2,6); ctx.lineTo(-36,18); ctx.stroke()
+  ctx.strokeStyle = theme.vein; ctx.lineWidth = 1.1
+  ctx.beginPath(); ctx.moveTo(-4,14); ctx.lineTo(-136,158); ctx.stroke()
+  ctx.beginPath(); ctx.moveTo(-4,14); ctx.lineTo(-178, 98); ctx.stroke()
+  ctx.beginPath(); ctx.moveTo(-4,14); ctx.lineTo(-98,198); ctx.stroke()
 
   ctx.fillStyle = theme.spot
-  const lspots = [[-26,32],[-36,42],[-32,54],[-18,58]]
-  for (const [sx,sy] of lspots) {
-    ctx.beginPath(); ctx.ellipse(sx*0.85,sy*0.85,2,1.5,0,0,Math.PI*2); ctx.fill()
+  for (const [sx,sy,sr] of [
+    [-142,152,3], [-166,188,2.8], [-156,218,3], [-118,238,2.5], [-78,245,2.2],
+  ] as [number,number,number][]) {
+    ctx.beginPath(); ctx.arc(sx, sy, sr, 0, Math.PI*2); ctx.fill()
   }
 }
 
@@ -150,35 +166,35 @@ function drawButterfly(
   ctx.rotate(angle)
   ctx.scale(size, size)
 
-  /* right wings (behind left) */
+  // Right wings (behind)
   ctx.save(); ctx.scale(-flapScale, 1); drawOneSide(ctx, theme); ctx.restore()
-  /* left wings (in front) */
+  // Left wings (front)
   ctx.save(); ctx.scale( flapScale, 1); drawOneSide(ctx, theme); ctx.restore()
 
-  /* body segments */
-  for (let i = 0; i < 7; i++) {
-    const r = 2.8 - i * 0.22
-    ctx.beginPath(); ctx.ellipse(0, 8 + i * 4.5, r, r + 0.5, 0, 0, Math.PI * 2)
+  // Body segments
+  for (let i = 0; i < 9; i++) {
+    const r = 5 - i * 0.3
+    ctx.beginPath(); ctx.ellipse(0, 15 + i * 8, r, r + 1, 0, 0, Math.PI * 2)
     ctx.fillStyle = theme.body; ctx.fill()
   }
-  /* thorax */
-  ctx.beginPath(); ctx.ellipse(0, -3, 4.5, 7, 0, 0, Math.PI * 2)
+  // Thorax
+  ctx.beginPath(); ctx.ellipse(0, -4, 7, 12, 0, 0, Math.PI * 2)
   ctx.fillStyle = theme.body; ctx.fill()
-  /* head */
-  ctx.beginPath(); ctx.arc(0, -13, 4, 0, Math.PI * 2)
+  // Head
+  ctx.beginPath(); ctx.arc(0, -20, 6.5, 0, Math.PI * 2)
   ctx.fillStyle = theme.body; ctx.fill()
-  /* eyes */
-  ctx.fillStyle = 'rgba(255,255,220,0.7)'
-  ctx.beginPath(); ctx.arc(-2.2, -14.5, 1.3, 0, Math.PI * 2); ctx.fill()
-  ctx.beginPath(); ctx.arc( 2.2, -14.5, 1.3, 0, Math.PI * 2); ctx.fill()
-  /* antennae */
-  ctx.lineWidth = 1.1; ctx.strokeStyle = theme.body
+  // Eyes
+  ctx.fillStyle = 'rgba(255,255,200,0.75)'
+  ctx.beginPath(); ctx.arc(-3, -22, 2, 0, Math.PI * 2); ctx.fill()
+  ctx.beginPath(); ctx.arc( 3, -22, 2, 0, Math.PI * 2); ctx.fill()
+  // Antennae
+  ctx.lineWidth = 1.5; ctx.strokeStyle = theme.body
   for (const sx of [-1, 1]) {
     ctx.beginPath()
-    ctx.moveTo(sx * 2, -16)
-    ctx.bezierCurveTo(sx * 5, -26, sx * 10, -34, sx * 13, -40)
+    ctx.moveTo(sx * 3, -25)
+    ctx.bezierCurveTo(sx * 8, -42, sx * 16, -58, sx * 22, -68)
     ctx.stroke()
-    ctx.beginPath(); ctx.arc(sx * 13, -40, 2.3, 0, Math.PI * 2)
+    ctx.beginPath(); ctx.arc(sx * 22, -68, 3.5, 0, Math.PI * 2)
     ctx.fillStyle = theme.body; ctx.fill()
   }
 
@@ -199,79 +215,76 @@ export default function Butterflies() {
     resize()
     window.addEventListener('resize', resize)
 
-    /* petals */
-    const PETAL_COUNT = 28
+    const PETAL_COUNT = 32
     const petals: Petal[] = Array.from({ length: PETAL_COUNT }, () => {
       const p = makePetal(canvas.width); p.y = Math.random() * canvas.height; return p
     })
 
-    /* flight paths */
     const pathA = (t: number) => ({
-      x: 0.18 + 0.28 * Math.sin(t * 0.30) + 0.07 * Math.sin(t * 0.82),
-      y: 0.22 + 0.20 * Math.cos(t * 0.24) + 0.05 * Math.cos(t * 0.70),
-      a: Math.atan2(0.20 * -Math.sin(t*0.24)*0.24, 0.28 * Math.cos(t*0.30)*0.30),
+      x: 0.18 + 0.26 * Math.sin(t * 0.28) + 0.06 * Math.sin(t * 0.75),
+      y: 0.25 + 0.18 * Math.cos(t * 0.22) + 0.04 * Math.cos(t * 0.65),
+      a: Math.atan2(0.18 * -Math.sin(t*0.22)*0.22, 0.26 * Math.cos(t*0.28)*0.28),
     })
     const pathB = (t: number) => ({
-      x: 0.82 - 0.28 * Math.sin(t * 0.30) - 0.07 * Math.sin(t * 0.82),
-      y: 0.78 - 0.20 * Math.cos(t * 0.24) - 0.05 * Math.cos(t * 0.70),
-      a: Math.PI + Math.atan2(0.20 * -Math.sin(t*0.24)*0.24, 0.28 * Math.cos(t*0.30)*0.30),
+      x: 0.82 - 0.26 * Math.sin(t * 0.28) - 0.06 * Math.sin(t * 0.75),
+      y: 0.75 - 0.18 * Math.cos(t * 0.22) - 0.04 * Math.cos(t * 0.65),
+      a: Math.PI + Math.atan2(0.18 * -Math.sin(t*0.22)*0.22, 0.26 * Math.cos(t*0.28)*0.28),
     })
 
     const frame = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
-      t += 0.011
+      t += 0.010
 
       const isMob = canvas.width < 768
-      const sz    = isMob ? 0.52 : 0.88
+      const sz    = isMob ? 0.22 : 0.44
 
-      /* petals */
+      // Petals
       for (const p of petals) {
-        p.x   += p.vx + Math.sin(t * 0.8 + p.rot) * 0.25
+        p.wobble += 0.038
+        p.x   += p.vx + Math.sin(p.wobble) * 0.45
         p.y   += p.vy
         p.rot += p.vrot
-        if (p.y > canvas.height + 30) { Object.assign(p, makePetal(canvas.width)) }
+        if (p.y > canvas.height + 40) { Object.assign(p, makePetal(canvas.width)) }
         drawPetal(ctx, p)
       }
 
-      /* butterflies */
       const a  = pathA(t), b = pathB(t)
       const ax = a.x * canvas.width,  ay = a.y * canvas.height
       const bx = b.x * canvas.width,  by = b.y * canvas.height
       const dist = Math.hypot(ax - bx, ay - by)
-      const flap  = Math.sin(t * 6.2) * 0.38 + 0.62   /* 0.24 → 1.0 */
+      const flap = Math.sin(t * 5.8) * 0.36 + 0.64
 
-      /* heart glow when close */
-      if (dist < 200) {
-        const a0 = (1 - dist / 200) * 0.45
+      // Heart glow when close
+      if (dist < 260) {
+        const a0 = (1 - dist / 260) * 0.50
         const mx = (ax + bx) / 2, my = (ay + by) / 2
-        const grd = ctx.createRadialGradient(mx, my, 0, mx, my, 120)
-        grd.addColorStop(0, `rgba(255,170,200,${a0})`); grd.addColorStop(1, 'rgba(255,170,200,0)')
-        ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(mx, my, 120, 0, Math.PI * 2); ctx.fill()
+        const grd = ctx.createRadialGradient(mx, my, 0, mx, my, 160)
+        grd.addColorStop(0, `rgba(255,160,200,${a0})`); grd.addColorStop(1, 'rgba(255,160,200,0)')
+        ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(mx, my, 160, 0, Math.PI * 2); ctx.fill()
 
-        /* extra petals burst near meeting point */
-        if (Math.sin(t * 10) > 0.92) {
+        if (Math.sin(t * 9) > 0.90) {
           const pp = makePetal(canvas.width)
-          pp.x = mx + (Math.random() - 0.5) * 60
-          pp.y = my + (Math.random() - 0.5) * 60
-          pp.sz = 4 + Math.random() * 5
-          pp.vy = -0.8 - Math.random() * 1.5
+          pp.x  = mx + (Math.random() - 0.5) * 80
+          pp.y  = my + (Math.random() - 0.5) * 80
+          pp.sz = 8 + Math.random() * 8
+          pp.vy = -1.2 - Math.random() * 2
           petals.push(pp)
-          if (petals.length > PETAL_COUNT + 30) petals.splice(0, 1)
+          if (petals.length > PETAL_COUNT + 40) petals.splice(0, 1)
         }
       }
 
-      /* blue butterfly */
+      // Blue butterfly
       ctx.save()
-      ctx.shadowBlur = dist < 200 ? 30 : 12
+      ctx.shadowBlur  = dist < 260 ? 45 : 20
       ctx.shadowColor = BLUE.glow
       drawButterfly(ctx, ax, ay, a.a, flap, BLUE, sz)
       ctx.restore()
 
-      /* pink butterfly */
+      // Pink butterfly
       ctx.save()
-      ctx.shadowBlur = dist < 200 ? 30 : 12
+      ctx.shadowBlur  = dist < 260 ? 45 : 20
       ctx.shadowColor = PINK.glow
-      drawButterfly(ctx, bx, by, b.a, flap + 0.3, PINK, sz)
+      drawButterfly(ctx, bx, by, b.a, flap + 0.25, PINK, sz)
       ctx.restore()
 
       animId = requestAnimationFrame(frame)
