@@ -7,7 +7,6 @@ import About       from './components/About'
 import Experience  from './components/Experience'
 import Skills      from './components/Skills'
 import Projects    from './components/Projects'
-import LiveFeed    from './components/LiveFeed'
 import Contact     from './components/Contact'
 import Footer      from './components/Footer'
 import MusicPlayer  from './components/MusicPlayer'
@@ -38,7 +37,6 @@ export default function App() {
         <Experience lang={lang} />
         <Skills     lang={lang} />
         <Projects   lang={lang} />
-        <LiveFeed   lang={lang} />
         <Contact    lang={lang} />
       </main>
       <Footer     lang={lang} />
